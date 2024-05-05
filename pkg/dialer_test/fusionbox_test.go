@@ -1,4 +1,4 @@
-package fusionbox_test
+package dialer_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/pericles-luz/go-base/pkg/utils"
 	"github.com/pericles-luz/go-fusion-pbx/internal"
 	"github.com/pericles-luz/go-fusion-pbx/internal/fusionbox"
+	"github.com/pericles-luz/go-fusion-pbx/pkg/dialer"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +16,7 @@ func TestFusionboxAddAgent(t *testing.T) {
 	require.NoError(t, err)
 	credential := fusionbox.NewCredential()
 	require.NoError(t, credential.FillFromJSONFile(configContent))
-	require.NoError(t, fusionbox.AddAgent(credential, "200115", "1601"))
+	require.NoError(t, dialer.AddAgent(credential, "200115", "1601"))
 }
 
 func TestFusionboxRemoveAgent(t *testing.T) {
@@ -24,5 +25,5 @@ func TestFusionboxRemoveAgent(t *testing.T) {
 	require.NoError(t, err)
 	credential := fusionbox.NewCredential()
 	require.NoError(t, credential.FillFromJSONFile(configContent))
-	require.NoError(t, fusionbox.RemoveAgent(credential, "200115", "1601"))
+	require.NoError(t, dialer.RemoveAgent(credential, "200115", "1601"))
 }

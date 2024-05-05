@@ -1,9 +1,12 @@
-package fusionbox
+package dialer
 
-import "github.com/pericles-luz/go-fusion-pbx/internal/gear"
+import (
+	"github.com/pericles-luz/go-fusion-pbx/internal/fusionbox"
+	"github.com/pericles-luz/go-fusion-pbx/internal/gear"
+)
 
-func AddAgent(credential *Credential, extension, agent string) error {
-	callcenter := NewCallcenter()
+func AddAgent(credential *fusionbox.Credential, extension, agent string) error {
+	callcenter := fusionbox.NewCallcenter()
 	callcenter.SetExtension(extension)
 	callcenter.SetAgent(agent)
 	g := gear.NewGear()
@@ -15,8 +18,8 @@ func AddAgent(credential *Credential, extension, agent string) error {
 	return nil
 }
 
-func RemoveAgent(credential *Credential, extension, agent string) error {
-	callcenter := NewCallcenter()
+func RemoveAgent(credential *fusionbox.Credential, extension, agent string) error {
+	callcenter := fusionbox.NewCallcenter()
 	callcenter.SetExtension(extension)
 	callcenter.SetAgent(agent)
 	g := gear.NewGear()
@@ -28,7 +31,7 @@ func RemoveAgent(credential *Credential, extension, agent string) error {
 	return nil
 }
 
-func Logon(credential *Credential, g *gear.Gear) {
+func Logon(credential *fusionbox.Credential, g *gear.Gear) {
 	g.Post(credential.BaseLink+"/login.php", map[string]string{
 		"username": credential.Username,
 		"password": credential.Password,
