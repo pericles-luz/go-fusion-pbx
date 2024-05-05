@@ -1,13 +1,12 @@
 package dialer
 
 import (
-	"github.com/pericles-luz/go-base/pkg/utils"
 	"github.com/pericles-luz/go-fusion-pbx/internal"
 	"github.com/pericles-luz/go-fusion-pbx/internal/fusionbox"
 )
 
-func LoadCredential(filename string) *fusionbox.Credential {
-	configContent, err := internal.ReadConfigFile(utils.GetBaseDirectory("config") + "/" + filename)
+func LoadCredential(path string) *fusionbox.Credential {
+	configContent, err := internal.ReadConfigFile(path)
 	if err != nil {
 		return nil
 	}
