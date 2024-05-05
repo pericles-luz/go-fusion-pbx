@@ -1,8 +1,6 @@
-package gear_test
+package internal
 
-import (
-	"os"
-)
+import "os"
 
 func ReadConfigFile(path string) ([]byte, error) {
 	content, err := os.ReadFile(path)
