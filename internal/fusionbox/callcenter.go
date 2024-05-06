@@ -49,7 +49,7 @@ func (c *Callcenter) VisitCallcenter(e *colly.HTMLElement) {
 	// extensionID is the last 36 characters of the href
 	c.extensionID = e.Attr("href")[len(e.Attr("href"))-36:]
 	c.visited = true
-	e.Request.Visit(e.Attr("href"))
+	utils.ManageError(e.Request.Visit(e.Attr("href")))
 }
 
 func (c *Callcenter) AddAgent(r *colly.Response) {
@@ -68,7 +68,7 @@ func (c *Callcenter) AddAgent(r *colly.Response) {
 	}
 	println("Adding agent to callcenter")
 	fields[nextTierKey] = agentID
-	r.Request.Post(fmt.Sprintf("call_center_queue_edit.php?id=%s", c.extensionID), fields)
+	utils.ManageError(r.Request.Post(fmt.Sprintf("call_center_queue_edit.php?id=%s", c.extensionID), fields))
 }
 
 func (c *Callcenter) NextTierKey(fields map[string]string) string {
@@ -91,7 +91,7 @@ func (c *Callcenter) RemoveAgent(r *colly.Response) {
 	println("Removing agent from callcenter")
 	println(tierUUID)
 	println(fmt.Sprintf("call_center_queue_edit.php?id=%s&call_center_tier_uuid=%s&a=delete", c.extensionID, tierUUID))
-	r.Request.Visit(fmt.Sprintf("call_center_queue_edit.php?id=%s&call_center_tier_uuid=%s&a=delete", c.extensionID, tierUUID))
+	utils.ManageError(r.Request.Visit(fmt.Sprintf("call_center_queue_edit.php?id=%s&call_center_tier_uuid=%s&a=delete", c.extensionID, tierUUID)))
 }
 
 func (c *Callcenter) TierUUID(source string) string {

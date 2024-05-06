@@ -5,11 +5,12 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/pericles-luz/go-base/pkg/utils"
 )
 
 func ExtractFromDataFromHTML(source string) map[string]string {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(source))
-	if err != nil {
+	if utils.ManageError(err) != nil {
 		fmt.Println("Error parsing HTML:", err)
 		return nil
 	}
