@@ -15,6 +15,7 @@ type Callcenter struct {
 	extensionID string
 	agent       string
 	visited     bool
+	acted       bool
 }
 
 func NewCallcenter() *Callcenter {
@@ -41,7 +42,6 @@ func (c *Callcenter) VisitCallcenter(e *colly.HTMLElement) {
 	if c.visited {
 		return
 	}
-	println("Visiting callcenter")
 	println(e.Text)
 	if !strings.Contains(e.Text, c.extension) {
 		return
@@ -54,6 +54,9 @@ func (c *Callcenter) VisitCallcenter(e *colly.HTMLElement) {
 
 func (c *Callcenter) AddAgent(r *colly.Response) {
 	if !c.visited {
+		return
+	}
+	if c.acted {
 		return
 	}
 	fields := gear.ExtractFromDataFromHTML(string(r.Body))
@@ -69,6 +72,8 @@ func (c *Callcenter) AddAgent(r *colly.Response) {
 	println("Adding agent to callcenter")
 	fields[nextTierKey] = agentID
 	utils.ManageError(r.Request.Post(fmt.Sprintf("call_center_queue_edit.php?id=%s", c.extensionID), fields))
+	c.acted = true
+	utils.ManageError(r.Request.Visit(fmt.Sprintf("cmd.php?cmd=reload&id=%s", c.extensionID)))
 }
 
 func (c *Callcenter) NextTierKey(fields map[string]string) string {
@@ -84,14 +89,18 @@ func (c *Callcenter) RemoveAgent(r *colly.Response) {
 	if !c.visited {
 		return
 	}
+	if c.acted {
+		return
+	}
 	tierUUID := c.TierUUID(string(r.Body))
 	if tierUUID == "" {
 		return
 	}
-	println("Removing agent from callcenter")
 	println(tierUUID)
 	println(fmt.Sprintf("call_center_queue_edit.php?id=%s&call_center_tier_uuid=%s&a=delete", c.extensionID, tierUUID))
 	utils.ManageError(r.Request.Visit(fmt.Sprintf("call_center_queue_edit.php?id=%s&call_center_tier_uuid=%s&a=delete", c.extensionID, tierUUID)))
+	c.acted = true
+	utils.ManageError(r.Request.Visit(fmt.Sprintf("cmd.php?cmd=reload&id=%s", c.extensionID)))
 }
 
 func (c *Callcenter) TierUUID(source string) string {
