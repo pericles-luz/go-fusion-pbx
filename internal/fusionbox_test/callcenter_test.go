@@ -36,3 +36,17 @@ func TestCallcenterMustFindAgentID(t *testing.T) {
 	agentID = callcenter.GetAgentID(callcenterWithoutBranchPageContent())
 	require.True(t, utils.ValidateUUID(agentID))
 }
+
+func TestCallcenterMustSetAsAlreadyInCallcenter(t *testing.T) {
+	callcenter := fusionbox.NewCallcenter()
+	callcenter.SetExtension("200115")
+	callcenter.SetAgent("1638")
+	require.True(t, callcenter.IsAlreadyInCallcenter(callcenterWithBranchPageContent()))
+}
+
+func TestCallcenterMustSetAsNotAlreadyInCallcenter(t *testing.T) {
+	callcenter := fusionbox.NewCallcenter()
+	callcenter.SetExtension("200115")
+	callcenter.SetAgent("1670")
+	require.False(t, callcenter.IsAlreadyInCallcenter(callcenterWithBranchPageContent()))
+}

@@ -11,7 +11,7 @@ import (
 )
 
 func TestGearMustAddAgentToCallcenterFusionBox(t *testing.T) {
-	t.Skip("Use only if necessary")
+	// t.Skip("Use only if necessary")
 	configContent, err := internal.ReadConfigFile(utils.GetBaseDirectory("config") + "/fusionbox.json")
 	require.NoError(t, err)
 	credential := fusionbox.NewCredential()
@@ -32,7 +32,7 @@ func TestGearMustAddAgentToCallcenterFusionBox(t *testing.T) {
 }
 
 func TestGearMustRemoveAgentToCallcenterFusionBox(t *testing.T) {
-	t.Skip("Use only if necessary")
+	// t.Skip("Use only if necessary")
 	configContent, err := internal.ReadConfigFile(utils.GetBaseDirectory("config") + "/fusionbox.json")
 	require.NoError(t, err)
 	credential := fusionbox.NewCredential()

@@ -2,6 +2,7 @@ package fusionbox
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -59,6 +60,12 @@ func (c *Callcenter) AddAgent(r *colly.Response) {
 	if c.acted {
 		return
 	}
+	if c.IsAlreadyInCallcenter(string(r.Body)) {
+		log.Println("Agent already in callcenter")
+		c.acted = true
+		c.visited = true
+		return
+	}
 	fields := gear.ExtractFromDataFromHTML(string(r.Body))
 	tierUUID := c.TierUUID(string(r.Body))
 	if utils.ValidateUUID(tierUUID) {
@@ -90,6 +97,12 @@ func (c *Callcenter) RemoveAgent(r *colly.Response) {
 		return
 	}
 	if c.acted {
+		return
+	}
+	if !c.IsAlreadyInCallcenter(string(r.Body)) {
+		log.Println("Agent not in callcenter")
+		c.acted = true
+		c.visited = true
 		return
 	}
 	tierUUID := c.TierUUID(string(r.Body))
@@ -125,6 +138,21 @@ func (c *Callcenter) TierUUID(source string) string {
 	println("diference", agentPosition-tierUUIDPosition)
 	println("tierUUIDEnd", tierUUIDEnd)
 	return source[tierUUIDPosition+tierUUIDStart : tierUUIDPosition+tierUUIDStart+tierUUIDEnd]
+}
+
+func (c *Callcenter) IsAlreadyInCallcenter(source string) bool {
+	firstAgentPosition := strings.Index(source, fmt.Sprintf(">%s<", c.Agent()))
+	if firstAgentPosition == -1 {
+		return false
+	}
+	previousTierUUIDPosition := strings.LastIndex(source[:firstAgentPosition], "call_center_tier_uuid")
+	if previousTierUUIDPosition == -1 {
+		return false
+	}
+	if (firstAgentPosition - previousTierUUIDPosition) > 280 {
+		return false
+	}
+	return true
 }
 
 // gets agentid from html option tag
